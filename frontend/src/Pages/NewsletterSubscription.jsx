@@ -15,7 +15,7 @@ const NewsletterSubscription = () => {
 
     try {
       // http://localhost:5000/api/subscription/subscribe
-      const response = await fetch("http://localhost:5000/api/subscription/subscribe", {
+      const response = await fetch("https://dollarducks-backend.onrender.com/api/subscription/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
