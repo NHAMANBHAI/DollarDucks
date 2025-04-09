@@ -14,6 +14,7 @@ const NewsletterSubscription = () => {
     setMessage("");
 
     try {
+      // http://localhost:5000/api/subscription/subscribe
       const response = await fetch("http://localhost:5000/api/subscription/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

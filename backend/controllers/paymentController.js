@@ -1,25 +1,33 @@
-import stripe from '../config/stripe.js';
+import Stripe from 'stripe';
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const createCheckoutSession = async (req, res) => {
-  const { priceId } = req.body;
+  const { productName, price, email } = req.body;
 
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
+      mode: 'payment',
+      customer_email: email,
       line_items: [
         {
-          price: priceId, // from Stripe dashboard
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: productName,
+            },
+            unit_amount: price * 100, // Convert dollars to cents
+          },
           quantity: 1,
         },
       ],
-      mode: 'payment',
-      success_url: 'https://yourdomain.com/success',
-      cancel_url: 'https://yourdomain.com/cancel',
+      success_url: 'https://dollarducks.com/success',
+      cancel_url: 'https://dollarducks.com/cancel',
     });
 
-    res.status(200).json({ url: session.url });
+    res.json({ id: session.id });
   } catch (error) {
-    console.error('Error creating Stripe session:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Stripe error:", error.message);
+    res.status(500).json({ error: error.message });
   }
 };
